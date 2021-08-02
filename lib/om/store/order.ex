@@ -30,11 +30,11 @@ defmodule Om.Store.Order do
     |> cast(attrs, @fields)
     |> validate_required(@fields)
     |> validate_number(:total,
-      greater_than_or_equal_to: @min_amount,
+      greater_than: @min_amount,
       less_than_or_equal_to: @max_amount
     )
     |> validate_number(:balance_due,
-      greater_than_or_equal_to: @min_amount,
+      greater_than: @min_amount,
       less_than_or_equal_to: @max_amount
     )
     |> validate_length(:description,

@@ -1,10 +1,12 @@
 defmodule OmWeb.GraphQl.Schema.Store.Mutations do
   use Absinthe.Schema.Notation
 
+  alias OmWeb.GraphQl.Schema.Store.Resolver
+
   object :store_mutations do
     field(:create_order, type: :order) do
       arg(:input, non_null(:order_input))
-      resolve(fn _, _, _ -> {:ok, %{}} end)
+      resolve(&Resolver.create_order/3)
     end
   end
 end

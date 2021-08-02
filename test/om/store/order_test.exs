@@ -19,7 +19,7 @@ defmodule On.Store.OrderTest do
     test "it refuses negative totals" do
       invalid_order = %{@valid_order | total: -10}
 
-      assert %{total: ["must be greater than or equal to 0"]} ==
+      assert %{total: ["must be greater than 0"]} ==
                %Order{}
                |> Order.changeset(invalid_order)
                |> errors_on()
@@ -37,7 +37,7 @@ defmodule On.Store.OrderTest do
     test "it validates negatives balance dues" do
       invalid_order = %{@valid_order | balance_due: -11}
 
-      assert %{balance_due: ["must be greater than or equal to 0"]} ==
+      assert %{balance_due: ["must be greater than 0"]} ==
                %Order{}
                |> Order.changeset(invalid_order)
                |> errors_on()
