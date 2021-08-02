@@ -84,4 +84,32 @@ defmodule On.Store.StoreTest do
       assert 990 == new_order.balance_due
     end
   end
+
+  describe "get_orders" do
+    test "should list orders" do
+      first = insert!(:order)
+      second = insert!(:order)
+
+      assert [result1, result2] = Store.get_orders()
+      assert first.id == result1.id
+      assert second.id == result2.id
+    end
+
+    test "should list orders and preload payments" do
+      first = insert!(:order)
+      second = insert!(:order)
+
+      insert!(:payment, order_id: first.id)
+      insert!(:payment, order_id: first.id)
+
+      insert!(:payment, order_id: second.id)
+
+      assert [result1, result2] = Store.get_orders()
+      assert first.id == result1.id
+      assert second.id == result2.id
+
+      assert [_, _] = result1.payments
+      assert [_] = result2.payments
+    end
+  end
 end

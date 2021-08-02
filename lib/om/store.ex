@@ -5,6 +5,7 @@ defmodule Om.Store do
   alias Om.Store.Payment
 
   import Om.Store.Calculator
+  import Ecto.Query
 
   def create_order(%{total: total} = params) do
     order_params = Map.put(params, :balance_due, total)
@@ -12,6 +13,15 @@ defmodule Om.Store do
     %Order{}
     |> Order.changeset(order_params)
     |> Repo.insert()
+  end
+
+  def get_orders do
+    from(o in Order,
+      left_join: p in assoc(o, :payments),
+      preload: [payments: p],
+      order_by: :inserted_at
+    )
+    |> Repo.all()
   end
 
   def pay_order(%{amount: amount, order_id: order_id} = payment_params) do

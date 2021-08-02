@@ -1,5 +1,6 @@
 defmodule Om.Factory do
   alias Om.Store.Order
+  alias Om.Store.Payment
   alias Om.Repo
 
   def build(:order) do
@@ -7,6 +8,14 @@ defmodule Om.Factory do
       total: 1000,
       balance_due: 1000,
       description: "Factory order"
+    }
+  end
+
+  def build(:payment) do
+    %Payment{
+      amount: 100,
+      note: "payment Factory",
+      order_id: build(:order).id
     }
   end
 
