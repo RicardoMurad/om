@@ -1,23 +1,31 @@
 defmodule On.Store.PaymentTest do
   use Om.DataCase
 
+  import Om.Factory
+
   alias Om.Store.Payment
   alias Ecto.Changeset
 
-  @valid_payment %{
-    amount: 10_000,
-    applied_at: ~N[2021-01-01 23:00:07],
-    note: "A foo payment"
-  }
+  setup do
+    order = insert!(:order)
+
+    valid_payment = %{
+      amount: 10_000,
+      note: "A foo payment",
+      order_id: order.id
+    }
+
+    {:ok, %{valid_payment: valid_payment}}
+  end
 
   describe "changeset/1" do
-    test "it creates an order" do
-      %Changeset{valid?: true, changes: changes} = %Payment{} |> Payment.changeset(@valid_payment)
-      assert @valid_payment == changes
+    test "it creates an order", %{valid_payment: valid_payment} do
+      %Changeset{valid?: true, changes: changes} = %Payment{} |> Payment.changeset(valid_payment)
+      assert valid_payment == changes
     end
 
-    test "it refuses negative amount" do
-      invalid_payment = %{@valid_payment | amount: -10}
+    test "it refuses negative amount", %{valid_payment: valid_payment} do
+      invalid_payment = %{valid_payment | amount: -10}
 
       assert %{amount: ["must be greater than or equal to 0"]} ==
                %Payment{}
@@ -25,19 +33,10 @@ defmodule On.Store.PaymentTest do
                |> errors_on()
     end
 
-    test "it refuses amount overflow" do
-      invalid_payment = %{@valid_payment | amount: 100_000_000}
+    test "it refuses amount overflow", %{valid_payment: valid_payment} do
+      invalid_payment = %{valid_payment | amount: 100_000_000}
 
       assert %{amount: ["must be less than or equal to 10000000"]} ==
-               %Payment{}
-               |> Payment.changeset(invalid_payment)
-               |> errors_on()
-    end
-
-    test "it requires applied_at date" do
-      invalid_payment = Map.drop(@valid_payment, [:applied_at])
-
-      assert %{applied_at: ["can't be blank"]} ==
                %Payment{}
                |> Payment.changeset(invalid_payment)
                |> errors_on()

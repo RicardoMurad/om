@@ -1,4 +1,4 @@
-defmodule OmWeb.GraphQl.Schema.Store.Mutations do
+defmodule OmWeb.GraphQl.Schema.Store.MutationsTest do
   use OmWeb.ConnCase
 
   @create_order_mutation """

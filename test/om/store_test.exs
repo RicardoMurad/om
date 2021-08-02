@@ -2,6 +2,9 @@ defmodule On.Store.StoreTest do
   use Om.DataCase
 
   alias Om.Store
+  alias Om.Store.Order
+
+  import Om.Factory
 
   @valid_order %{
     description: "This is a valid order",
@@ -35,6 +38,50 @@ defmodule On.Store.StoreTest do
 
       assert %{total: ["must be greater than 0"], balance_due: ["must be greater than 0"]} ==
                changeset |> errors_on()
+    end
+  end
+
+  describe "pay_order/1" do
+    test "it validades if payment amount is more than order balance_due" do
+      %{id: order_id} = insert!(:order, balance_due: 1000)
+
+      params = %{
+        order_id: order_id,
+        amount: 2000,
+        note: "bit payment"
+      }
+
+      assert {:error, "payment_amount_over_limit"} == Store.pay_order(params)
+    end
+
+    test "it validades if payment amount is equal order balance_due" do
+      %{id: order_id} = insert!(:order, balance_due: 1000)
+
+      params = %{
+        order_id: order_id,
+        amount: 1000,
+        note: "bit payment"
+      }
+
+      assert {:ok, payment} = Store.pay_order(params)
+      assert payment.id
+    end
+
+    test "it validades if payment amount is less than order balance_due" do
+      %{id: order_id} = insert!(:order, balance_due: 1000)
+
+      params = %{
+        order_id: order_id,
+        amount: 10,
+        note: "bit payment"
+      }
+
+      assert {:ok, payment} = Store.pay_order(params)
+      assert payment.id
+
+      new_order = Repo.get(Order, order_id)
+
+      assert 990 == new_order.balance_due
     end
   end
 end

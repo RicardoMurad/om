@@ -2,9 +2,9 @@ defmodule Om.Store.Payment do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias On.Store.Order
+  alias O.Store.Order
 
-  @required_fields [:amount, :applied_at]
+  @required_fields [:amount, :order_id]
   @fields @required_fields ++ [:note]
 
   @max_note_size 100
@@ -16,7 +16,6 @@ defmodule Om.Store.Payment do
   @foreign_key_type :binary_id
   schema "payments" do
     field :amount, :integer
-    field :applied_at, :naive_datetime
     field :note, :string, default: ""
 
     belongs_to :order, Order
