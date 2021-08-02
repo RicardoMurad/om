@@ -4,7 +4,7 @@ defmodule Om.Store.Payment do
 
   alias O.Store.Order
 
-  @required_fields [:amount, :order_id]
+  @required_fields [:id, :amount, :order_id]
   @fields @required_fields ++ [:note]
 
   @max_note_size 100

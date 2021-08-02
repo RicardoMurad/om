@@ -29,6 +29,7 @@ defmodule OmWeb.GraphQl.Schema.Store.Types do
   end
 
   input_object :payment_input do
+    field(:id, non_null(:uuid4))
     field(:order_id, non_null(:uuid4))
     field(:amount, non_null(:integer))
     field(:note, :string)

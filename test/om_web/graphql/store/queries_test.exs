@@ -57,8 +57,7 @@ defmodule OmWeb.GraphQl.Schema.Store.QueriesTest do
                    }
                  ]
                }
-             } ==
-               run_graphql(conn, query: @get_orders_query)
+             } = run_graphql(conn, query: @get_orders_query)
     end
   end
 end

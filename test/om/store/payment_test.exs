@@ -10,6 +10,7 @@ defmodule On.Store.PaymentTest do
     order = insert!(:order)
 
     valid_payment = %{
+      id: UUID.uuid4(),
       amount: 10_000,
       note: "A foo payment",
       order_id: order.id

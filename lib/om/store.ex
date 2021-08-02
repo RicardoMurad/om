@@ -23,9 +23,10 @@ defmodule Om.Store do
     |> Repo.all()
   end
 
-  def pay_order(%{amount: amount, order_id: order_id} = payment_params) do
+  def pay_order(%{amount: amount, order_id: order_id, id: payment_id} = payment_params) do
     Repo.transaction(fn ->
-      with {:ok, order} <- get_order(order_id),
+      with {:error, "payment_not_found"} <- get_payment(payment_id),
+           {:ok, order} <- get_order(order_id),
            {:ok, new_balance_due} <- get_new_balance_due(order, amount) do
         {:ok, _} =
           order
@@ -40,6 +41,7 @@ defmodule Om.Store do
         payment
       else
         {:error, err} -> Repo.rollback(err)
+        {:ok, %Payment{}} -> Repo.rollback("payment_already_processed")
       end
     end)
   end
@@ -59,6 +61,13 @@ defmodule Om.Store do
          |> Repo.preload(:payments) do
       nil -> {:error, "order_not_found"}
       order -> {:ok, order}
+    end
+  end
+
+  defp get_payment(payment_id) do
+    case Repo.get(Payment, payment_id) do
+      nil -> {:error, "payment_not_found"}
+      payment -> {:ok, payment}
     end
   end
 end

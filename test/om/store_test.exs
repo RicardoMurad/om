@@ -46,6 +46,7 @@ defmodule On.Store.StoreTest do
       %{id: order_id} = insert!(:order, balance_due: 1000)
 
       params = %{
+        id: UUID.uuid4(),
         order_id: order_id,
         amount: 2000,
         note: "bit payment"
@@ -58,6 +59,7 @@ defmodule On.Store.StoreTest do
       %{id: order_id} = insert!(:order, balance_due: 1000)
 
       params = %{
+        id: UUID.uuid4(),
         order_id: order_id,
         amount: 1000,
         note: "bit payment"
@@ -71,6 +73,7 @@ defmodule On.Store.StoreTest do
       %{id: order_id} = insert!(:order, balance_due: 1000)
 
       params = %{
+        id: UUID.uuid4(),
         order_id: order_id,
         amount: 10,
         note: "bit payment"
@@ -82,6 +85,20 @@ defmodule On.Store.StoreTest do
       new_order = Repo.get(Order, order_id)
 
       assert 990 == new_order.balance_due
+    end
+
+    test "it refused a payment beem processed twice" do
+      %{id: order_id} = insert!(:order)
+
+      params = %{
+        id: UUID.uuid4(),
+        order_id: order_id,
+        amount: 10,
+        note: "bit payment"
+      }
+
+      assert {:ok, _} = Store.pay_order(params)
+      assert {:error, "payment_already_processed"} = Store.pay_order(params)
     end
   end
 

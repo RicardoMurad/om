@@ -74,6 +74,7 @@ defmodule OmWeb.GraphQl.Schema.Store.MutationsTest do
       %{id: order_id} = insert!(:order, balance_due: 1000)
 
       params = %{
+        id: UUID.uuid4(),
         order_id: order_id,
         amount: 1000,
         note: "This litle note"
@@ -101,12 +102,6 @@ defmodule OmWeb.GraphQl.Schema.Store.MutationsTest do
     test "it tries to pay over limit", %{conn: conn} do
       %{id: order_id} = insert!(:order, balance_due: 1000)
 
-      params = %{
-        order_id: order_id,
-        amount: 1000,
-        note: "This litle note"
-      }
-
       assert %{
                "data" => %{
                  "createPayment" => %{
@@ -119,7 +114,14 @@ defmodule OmWeb.GraphQl.Schema.Store.MutationsTest do
              } =
                run_graphql(conn,
                  query: @create_payment_mutation,
-                 variables: %{"input" => params}
+                 variables: %{
+                   "input" => %{
+                     id: UUID.uuid4(),
+                     order_id: order_id,
+                     amount: 1000,
+                     note: "This litle note"
+                   }
+                 }
                )
 
       assert %{
@@ -134,7 +136,14 @@ defmodule OmWeb.GraphQl.Schema.Store.MutationsTest do
              } ==
                run_graphql(conn,
                  query: @create_payment_mutation,
-                 variables: %{"input" => params}
+                 variables: %{
+                   "input" => %{
+                     id: UUID.uuid4(),
+                     order_id: order_id,
+                     amount: 1000,
+                     note: "This litle note"
+                   }
+                 }
                )
     end
 
@@ -142,6 +151,7 @@ defmodule OmWeb.GraphQl.Schema.Store.MutationsTest do
       order_id = UUID.uuid4()
 
       params = %{
+        id: UUID.uuid4(),
         order_id: order_id,
         amount: 1000,
         note: "This litle note"
