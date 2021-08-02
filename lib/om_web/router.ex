@@ -1,12 +1,15 @@
 defmodule OmWeb.Router do
   use OmWeb, :router
 
+  alias OmeWeb.Graphql.Schema
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/api", OmWeb do
-    pipe_through :api
+  scope "/" do
+    forward "/graphl", Absinthe.Plug, schema: Schema
+    forward "/graphiql", Absinthe.Plug.GraphiQL, schema: Schema
   end
 
   # Enables LiveDashboard only for development
