@@ -1,9 +1,7 @@
 defmodule On.Store.StoreTest do
   use Om.DataCase
 
-  alias Ecto.Changeset
   alias Om.Store
-  alias Om.Store.Order
 
   @valid_order %{
     description: "This is a valid order",

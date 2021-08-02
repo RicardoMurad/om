@@ -28,6 +28,22 @@ defmodule OmWeb.ConnCase do
 
       # The default endpoint for testing
       @endpoint OmWeb.Endpoint
+
+      def run_graphql(conn, options) do
+        conn
+        |> post(
+          "/graphql",
+          build_query(options[:query], options[:variables])
+        )
+        |> json_response(200)
+      end
+
+      defp build_query(query, variables) do
+        %{
+          "query" => query,
+          "variables" => variables
+        }
+      end
     end
   end
 

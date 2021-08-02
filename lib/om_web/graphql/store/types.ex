@@ -6,6 +6,7 @@ defmodule OmWeb.GraphQl.Schema.Store.Types do
     field(:description, non_null(:string))
     field(:balance_due, non_null(:integer))
     field(:total, non_null(:integer))
+    field(:inserted_at, non_null(:string))
   end
 
   # # input objects
