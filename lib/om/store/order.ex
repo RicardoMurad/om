@@ -2,6 +2,8 @@ defmodule Om.Store.Order do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Om.Store.Payment
+
   @min_amount 0
   @max_amount 10_000_000
 
@@ -16,6 +18,8 @@ defmodule Om.Store.Order do
     field :description, :string
     field :balance_due, :integer
     field :total, :integer
+
+    has_many :payments, Payment
 
     timestamps()
   end
