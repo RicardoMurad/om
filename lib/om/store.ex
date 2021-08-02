@@ -4,7 +4,6 @@ defmodule Om.Store do
   alias Om.Store.Order
   alias Om.Store.Payment
 
-  import Om.Store.Calculator
   import Ecto.Query
 
   def create_order(%{total: total} = params) do
@@ -43,6 +42,16 @@ defmodule Om.Store do
         {:error, err} -> Repo.rollback(err)
       end
     end)
+  end
+
+  defp get_new_balance_due(%Order{balance_due: balance_due}, amount) do
+    new_balance_due = balance_due - amount
+
+    if new_balance_due >= 0 do
+      {:ok, new_balance_due}
+    else
+      {:error, "payment_amount_over_limit"}
+    end
   end
 
   defp get_order(order_id) do
