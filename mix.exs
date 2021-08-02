@@ -20,7 +20,7 @@ defmodule Om.MixProject do
   def application do
     [
       mod: {Om.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :crypto]
     ]
   end
 
@@ -43,7 +43,8 @@ defmodule Om.MixProject do
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:uuid, "~> 1.1"}
     ]
   end
 
